@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4c051749-07ca-496a-a9a0-82cca7cebf90" basePath="/" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="1d61c4d0-7f54-4827-84f5-08eb063dab8b" basePath="/procdi" >
+		<http:request-connection host="35.245.153.252" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="71236878-e619-4a3d-9c43-6102de8e4c2f" basePath="/procdi" >
+		<http:request-connection host="35.245.153.252" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration2" doc:name="HTTP Request configuration" doc:id="76a32708-9a6c-426d-820a-283e1dd650ea" basePath="/procdi" >
+		<http:request-connection host="35.245.153.252" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration3" doc:name="HTTP Request configuration" doc:id="72271740-5176-4cd8-9e89-76922235d968" basePath="/procdi" >
+		<http:request-connection host="35.245.153.252" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration4" doc:name="HTTP Request configuration" doc:id="1256a4f7-2825-4a25-94da-523548f30aaf" basePath="/procdi" >
+		<http:request-connection host="35.245.153.252" />
+	</http:request-config>
+	<flow name="restFlow" doc:id="1026e61d-99a6-4794-aa7c-1949970b1496" >
+		<http:listener doc:name="Listener" doc:id="17b2f670-38b5-4213-a9cb-7a3e7bb48e6e" config-ref="HTTP_Listener_config" path="/rest"/>
+		<choice doc:name="Choice" doc:id="f61cc0f6-9c7a-4ff9-9d41-dbdfb05e110e" >
+			<when expression="#[attributes.queryParams.id == null]">
+				<flow-ref doc:name="getallemployee" doc:id="745ee133-7864-4fb9-b3df-1df8f15f5e97" name="getallemployee"/>
+			</when>
+			<when expression="#[attributes.queryParams.id != null]">
+				<flow-ref doc:name="getbyid" doc:id="79d86eb5-b598-4020-9f47-14aa4b0f5d34" name="getbyid"/>
+			</when>
+			<otherwise>
+				<set-payload value="does not support" doc:name="Set Payload" doc:id="53ed86a8-afd7-464b-84a9-e7d182182dce" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="restFlow2" doc:id="30a4a3ac-3a22-4e59-bd34-b9aaf467a11b" >
+		<ee:transform doc:name="Transform Message" doc:id="282c966e-259a-4fa9-943d-bcaf79057585" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4f70d9c3-7691-4bab-a37d-3dd928c0c90c" />
+	</flow>
+	<flow name="getbyid" doc:id="6b632932-e94a-42df-9d13-b682834df832" >
+		<http:request method="GET" doc:name="Request" doc:id="e34507f2-a4e7-42f4-a123-e7f25da6d790" config-ref="HTTP_Request_configuration2" path="/api/single_read.php">
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	id : attributes.queryParams.id
+}]]]></http:query-params>
+		</http:request>
+	</flow>
+	<flow name="put" doc:id="484d7081-8270-43af-91e2-ee27e81e1c76" >
+		<http:request method="PUT" doc:name="Request" doc:id="2d487a09-f4bf-4b2e-ac00-1348cc7211e7" config-ref="HTTP_Request_configuration3" path="/api/update.php"/>
+	</flow>
+	<flow name="delete" doc:id="dcc6ca0d-8329-49a3-a6a1-d7db1008b0a6" >
+		<http:request method="DELETE" doc:name="Request" doc:id="6aa764a2-6118-41c4-842c-66f5c9bcd48f" config-ref="HTTP_Request_configuration4" path="/api/delete.php"/>
+	</flow>
+	<flow name="post" doc:id="ee0db1a3-357e-42a1-9f2b-58c454ac0c80" >
+		<http:request method="POST" doc:name="Request" doc:id="77782604-9f48-4c24-96a5-19c22518d854" config-ref="HTTP_Request_configuration1" path="/api/create.php"/>
+	</flow>
+	<flow name="getallemployee" doc:id="515dbcf1-4e6c-443d-83db-49f6442500ed" >
+		<http:request method="GET" doc:name="Request" doc:id="65080a7f-0012-4711-b08f-7fca98b9cb79" config-ref="HTTP_Request_configuration" path="/api/read.php">
+		</http:request>
+	</flow>
+</mule>

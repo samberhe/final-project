@@ -4,11 +4,11 @@ REST/SOAP API Integration project
 Mule ESB Final Project Requirement
 
 Below are the functionality you will deliver:-
- Use file End-Point to save the REST data.
- Use scatter gathering for redundant configurations.
- Create error handling strategy for all errors.
- Use MUNIT in order to test the flow.
- Use GIT to version control and collaboration
+Use file End-Point to save the REST data.
+Use scatter gathering for redundant configurations.
+Create error handling strategy for all errors.
+Use MUNIT in order to test the flow.
+Use GIT to version control and collaboration
 Use the following REST application for your information
 and comparison.
 
